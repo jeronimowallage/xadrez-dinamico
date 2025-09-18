@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono Chess</title>
+    <title>Modern Chess Arena</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -32,25 +32,44 @@
             text-align: center;
             max-width: 600px;
             width: 100%;
-            padding: 30px;
+            padding: 40px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
+            border-radius: 24px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
-            font-size: 5rem;
-            margin-bottom: 30px;
-            color: #e94560;
-            text-shadow: 0 0 15px rgba(233, 69, 96, 0.7);
+            font-size: 5.5rem;
+            margin-bottom: 25px;
+            color: #00c9ff;
+            text-shadow: 0 0 20px rgba(0, 201, 255, 0.7);
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 20px;
             color: #fff;
-            font-weight: 300;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00c9ff, #92fe9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 35px;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 80%;
+            line-height: 1.6;
         }
 
         .game-mode {
@@ -62,21 +81,43 @@
         }
 
         .btn {
-            padding: 15px 30px;
+            padding: 18px 30px;
             font-size: 1.2rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(45deg, #00c9ff, #92fe9d);
+            color: #0f0c29;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 201, 255, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
         .btn:hover {
-            background: #e94560;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 201, 255, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover::after {
+            transform: translateY(0);
         }
 
         /* Tela do jogo */
@@ -92,15 +133,27 @@
         .game-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             width: 100%;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .game-info {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .game-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00c9ff, #92fe9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .game-controls {
@@ -108,23 +161,48 @@
             gap: 15px;
         }
 
-        .chessboard {
+        .control-btn {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .chessboard-container {
+            position: relative;
             width: 100%;
             max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .chessboard {
+            width: 100%;
             aspect-ratio: 1/1;
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(8, 1fr);
-            border: 5px solid #2d4059;
-            border-radius: 5px;
+            border: 6px solid #1a1a2e;
+            border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
         }
 
         .square {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
@@ -139,16 +217,16 @@
         }
 
         .square.selected {
-            background-color: rgba(233, 69, 96, 0.5);
+            background-color: rgba(0, 201, 255, 0.5);
         }
 
         .square.possible-move::before {
             content: '';
             position: absolute;
-            width: 30%;
-            height: 30%;
+            width: 25%;
+            height: 25%;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 201, 255, 0.5);
         }
 
         .square.possible-capture::before {
@@ -157,25 +235,63 @@
             width: 100%;
             height: 100%;
             border-radius: 0;
-            border: 5px solid rgba(0, 0, 0, 0.2);
+            border: 4px solid rgba(255, 0, 0, 0.4);
             box-sizing: border-box;
         }
 
+        .square.castling-move::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(0, 201, 255, 0.8);
+            border-radius: 8px;
+            box-sizing: border-box;
+            background: rgba(0, 201, 255, 0.2);
+        }
+
         .square.check {
-            background-color: rgba(255, 0, 0, 0.5);
+            background-color: rgba(255, 0, 0, 0.4);
+        }
+
+        .coordinates {
+            position: absolute;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 5px;
+        }
+
+        .coord-top {
+            top: -25px;
+        }
+
+        .coord-bottom {
+            bottom: -25px;
+        }
+
+        .coord-left {
+            left: -25px;
+        }
+
+        .coord-right {
+            right: -25px;
         }
 
         .status {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
+            margin-top: 25px;
+            font-size: 1.3rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 25px;
+            border-radius: 12px;
             text-align: center;
-            min-height: 60px;
+            min-height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Peças de xadrez com cores distintas */
@@ -186,16 +302,21 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .piece:hover {
+            transform: scale(1.1);
         }
 
         .piece.white {
-            color: #fff;
-            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         .piece.black {
-            color: #000;
-            text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+            color: #000000;
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
         }
 
         /* Modal de promoção */
@@ -206,52 +327,57 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 100;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
 
         .promotion-options {
             display: flex;
-            background: #2d4059;
-            padding: 20px;
-            border-radius: 10px;
-            gap: 15px;
+            background: #1a1a2e;
+            padding: 25px;
+            border-radius: 16px;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .promotion-piece {
-            font-size: 3rem;
-            width: 70px;
-            height: 70px;
+            font-size: 3.5rem;
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            background: #b58863;
-            border-radius: 8px;
+            background: #2d4059;
+            border-radius: 12px;
+            transition: all 0.3s ease;
         }
 
         .promotion-piece:hover {
-            background: #e94560;
+            background: #00c9ff;
+            transform: translateY(-5px);
         }
 
         /* Responsividade */
         @media (max-width: 768px) {
             .logo {
-                font-size: 3.5rem;
+                font-size: 4rem;
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
-            .chessboard {
+            .chessboard-container {
                 max-width: 90vw;
             }
             
             .square {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
 
             .game-header {
@@ -259,19 +385,31 @@
                 align-items: center;
                 gap: 15px;
             }
+            
+            .promotion-options {
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: 300px;
+            }
+            
+            .promotion-piece {
+                font-size: 2.5rem;
+                width: 60px;
+                height: 60px;
+            }
         }
 
         @media (max-width: 480px) {
             .logo {
-                font-size: 2.5rem;
+                font-size: 3rem;
             }
             
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
             
             .btn {
-                padding: 12px 20px;
+                padding: 15px 20px;
                 font-size: 1rem;
             }
             
@@ -281,13 +419,32 @@
             }
             
             .square {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
-
-            .promotion-options {
-                flex-wrap: wrap;
-                justify-content: center;
-                max-width: 300px;
+            
+            .status {
+                font-size: 1.1rem;
+                padding: 12px 20px;
+            }
+            
+            .coordinates {
+                font-size: 0.7rem;
+            }
+            
+            .coord-top {
+                top: -22px;
+            }
+            
+            .coord-bottom {
+                bottom: -22px;
+            }
+            
+            .coord-left {
+                left: -22px;
+            }
+            
+            .coord-right {
+                right: -22px;
             }
         }
     </style>
@@ -295,8 +452,9 @@
 <body>
     <!-- Tela inicial -->
     <div id="start-screen">
-        <div class="logo">♔</div>
-        <h1>Chrono Chess</h1>
+        <div class="logo">♚</div>
+        <h1>Modern Chess Arena</h1>
+        <p class="subtitle">Desafie suas habilidades no mais elegante e moderno tabuleiro de xadrez digital</p>
         <div class="game-mode">
             <button class="btn" id="pvp-btn">Jogador vs Jogador</button>
             <button class="btn" id="pvc-btn">Jogador vs Computador</button>
@@ -307,16 +465,32 @@
     <div id="game-screen">
         <div class="game-header">
             <div class="game-info">
-                <h2 id="game-mode-text">Jogador vs Jogador</h2>
+                <div class="game-title">Modern Chess Arena</div>
                 <div id="turn-indicator">Vez das: Brancas</div>
             </div>
             <div class="game-controls">
-                <button class="btn" id="restart-btn">Reiniciar</button>
-                <button class="btn" id="menu-btn">Voltar ao Menu</button>
+                <button class="control-btn" id="restart-btn">Reiniciar</button>
+                <button class="control-btn" id="menu-btn">Voltar ao Menu</button>
             </div>
         </div>
         
-        <div class="chessboard" id="chessboard"></div>
+        <div class="chessboard-container">
+            <!-- Coordenadas do tabuleiro -->
+            <div class="coordinates coord-left">
+                <div>8</div><div>7</div><div>6</div><div>5</div><div>4</div><div>3</div><div>2</div><div>1</div>
+            </div>
+            <div class="coordinates coord-right">
+                <div>8</div><div>7</div><div>6</div><div>5</div><div>4</div><div>3</div><div>2</div><div>1</div>
+            </div>
+            <div class="coordinates coord-top">
+                <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span>
+            </div>
+            <div class="coordinates coord-bottom">
+                <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span>
+            </div>
+            
+            <div class="chessboard" id="chessboard"></div>
+        </div>
         
         <div class="status" id="game-status">Jogo em andamento</div>
     </div>
@@ -334,6 +508,7 @@
     <script>
         // Constantes e variáveis globais
         const BOARD_SIZE = 8;
+        const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
         let board = [];
         let selectedPiece = null;
         let currentPlayer = 'white';
@@ -463,6 +638,7 @@
                     square.classList.add((row + col) % 2 === 0 ? 'light' : 'dark');
                     square.dataset.row = row;
                     square.dataset.col = col;
+                    square.dataset.position = LETTERS[col] + (8 - row);
                     chessboard.appendChild(square);
                     
                     // Inicializa o tabuleiro lógico
@@ -533,7 +709,7 @@
                 const piece = board[row][col];
                 
                 // Remove classes de destaque
-                square.classList.remove('selected', 'possible-move', 'possible-capture', 'check');
+                square.classList.remove('selected', 'possible-move', 'possible-capture', 'check', 'castling-move');
                 
                 if (piece) {
                     const pieceElement = document.createElement('div');
@@ -584,8 +760,6 @@
             gameMode = mode;
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
-            document.getElementById('game-mode-text').textContent = 
-                mode === 'pvp' ? 'Jogador vs Jogador' : 'Jogador vs Computador';
             
             resetGame();
         }
@@ -628,10 +802,13 @@
                 const validMoves = getValidMoves(selectedPiece.row, selectedPiece.col);
                 
                 // Verifica se o movimento é válido
-                const isValid = validMoves.some(move => move.row === row && move.col === col);
+                const validMove = validMoves.find(move => move.row === row && move.col === col);
                 
-                if (isValid) {
-                    movePiece(selectedPiece.row, selectedPiece.col, row, col);
+                if (validMove) {
+                    movePiece(selectedPiece.row, selectedPiece.col, row, col, {
+                        isCastling: validMove.isCastling,
+                        isEnPassant: validMove.isEnPassant
+                    });
                     
                     // Se for modo PvC e o jogo ainda estiver ativo, faz a jogada do computador
                     if (gameActive && gameMode === 'pvc' && currentPlayer === 'black') {
@@ -692,7 +869,9 @@
             
             validMoves.forEach(move => {
                 const square = document.querySelector(`.square[data-row="${move.row}"][data-col="${move.col}"]`);
-                if (board[move.row][move.col]) {
+                if (move.isCastling) {
+                    square.classList.add('castling-move');
+                } else if (board[move.row][move.col]) {
                     square.classList.add('possible-capture');
                 } else {
                     square.classList.add('possible-move');
@@ -849,26 +1028,65 @@
                 }
             }
             
-            // Roque
-            if (!board[row][col].hasMoved && !isKingInCheck(color)) {
-                // Roque do lado do rei
-                if (castlingRights[color].kingSide &&
-                    !board[row][col+1] && !board[row][col+2] &&
-                    board[row][col+3] && board[row][col+3].type === 'rook' && !board[row][col+3].hasMoved &&
-                    !isSquareAttacked(row, col+1, color) && !isSquareAttacked(row, col+2, color)) {
-                    moves.push({ row: row, col: col+2, isCastling: 'kingSide' });
+            // Roque - Verifica todas as condições necessárias
+            if (canCastle(row, col, color)) {
+                // Roque do lado do rei (O-O)
+                if (castlingRights[color].kingSide && canCastleKingSide(row, col, color)) {
+                    moves.push({ row: row, col: col + 2, isCastling: 'kingSide' });
                 }
                 
-                // Roque do lado da rainha
-                if (castlingRights[color].queenSide &&
-                    !board[row][col-1] && !board[row][col-2] && !board[row][col-3] &&
-                    board[row][col-4] && board[row][col-4].type === 'rook' && !board[row][col-4].hasMoved &&
-                    !isSquareAttacked(row, col-1, color) && !isSquareAttacked(row, col-2, color)) {
-                    moves.push({ row: row, col: col-2, isCastling: 'queenSide' });
+                // Roque do lado da rainha (O-O-O)
+                if (castlingRights[color].queenSide && canCastleQueenSide(row, col, color)) {
+                    moves.push({ row: row, col: col - 2, isCastling: 'queenSide' });
                 }
             }
             
             return moves;
+        }
+        
+        // Verifica se o roque é possível (condições gerais)
+        function canCastle(row, col, color) {
+            const piece = board[row][col];
+            return piece && 
+                   piece.type === 'king' && 
+                   !piece.hasMoved && 
+                   !isKingInCheck(color);
+        }
+        
+        // Verifica se o roque do lado do rei é possível
+        function canCastleKingSide(row, col, color) {
+            // Verifica se a torre do lado do rei existe e não se moveu
+            const rook = board[row][col + 3];
+            if (!rook || rook.type !== 'rook' || rook.color !== color || rook.hasMoved) {
+                return false;
+            }
+            
+            // Verifica se as casas entre o rei e a torre estão vazias
+            if (board[row][col + 1] || board[row][col + 2]) {
+                return false;
+            }
+            
+            // Verifica se o rei não passa por casas atacadas
+            return !isSquareAttacked(row, col + 1, color) && 
+                   !isSquareAttacked(row, col + 2, color);
+        }
+        
+        // Verifica se o roque do lado da rainha é possível
+        function canCastleQueenSide(row, col, color) {
+            // Verifica se a torre do lado da rainha existe e não se moveu
+            const rook = board[row][col - 4];
+            if (!rook || rook.type !== 'rook' || rook.color !== color || rook.hasMoved) {
+                return false;
+            }
+            
+            // Verifica se as casas entre o rei e a torre estão vazias
+            if (board[row][col - 1] || board[row][col - 2] || board[row][col - 3]) {
+                return false;
+            }
+            
+            // Verifica se o rei não passa por casas atacadas
+            return !isSquareAttacked(row, col - 1, color) && 
+                   !isSquareAttacked(row, col - 2, color);
         }
 
         // Move uma peça
@@ -885,15 +1103,19 @@
                 kings[piece.color] = { row: toRow, col: toCol };
                 piece.hasMoved = true;
                 
+                // Remove direitos de roque quando o rei se move
+                castlingRights[piece.color].kingSide = false;
+                castlingRights[piece.color].queenSide = false;
+                
                 // Roque
                 if (moveInfo.isCastling) {
                     if (moveInfo.isCastling === 'kingSide') {
-                        // Move a torre
+                        // Move a torre do lado do rei
                         board[toRow][toCol-1] = board[toRow][toCol+1];
                         board[toRow][toCol+1] = null;
                         board[toRow][toCol-1].hasMoved = true;
                     } else if (moveInfo.isCastling === 'queenSide') {
-                        // Move a torre
+                        // Move a torre do lado da rainha
                         board[toRow][toCol+1] = board[toRow][toCol-2];
                         board[toRow][toCol-2] = null;
                         board[toRow][toCol+1].hasMoved = true;
@@ -1212,7 +1434,7 @@
             selectedPiece = null;
             const squares = document.querySelectorAll('.square');
             squares.forEach(square => {
-                square.classList.remove('selected', 'possible-move', 'possible-capture');
+                square.classList.remove('selected', 'possible-move', 'possible-capture', 'castling-move');
             });
         }
 
@@ -1436,4 +1658,3 @@
     </script>
 </body>
 </html>
-
